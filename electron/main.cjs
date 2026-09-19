@@ -202,6 +202,7 @@ async function initControlPlane() {
     }
   });
   await controlPlane.init();
+  controlPlane.schedule();
   return controlPlane;
 }
 
@@ -882,6 +883,7 @@ function registerIpc() {
 
   ipcMain.handle('harness:start', async (_event, payload) => startHarness(payload));
   ipcMain.handle('control-plane:status', async () => (await initControlPlane()).status());
+  ipcMain.handle('control-plane:replay', async (_e,p)=>controlPlane.replay(p?.runId,p?.limit));
   ipcMain.handle('control-plane:events', async (_event, payload) => (await initControlPlane()).listEvents(payload?.limit || 500));
   ipcMain.handle('control-plane:create-mission', async (_event, payload) => {
     const state = await loadState();
@@ -897,6 +899,7 @@ function registerIpc() {
   ipcMain.handle('control-plane:pause', async (_event, payload) => (await initControlPlane()).pauseMission(payload?.runId));
   ipcMain.handle('control-plane:cancel', async (_event, payload) => (await initControlPlane()).cancelMission(payload?.runId));
   ipcMain.handle('control-plane:approve', async (_event, payload) => (await initControlPlane()).approve(payload?.approvalId, { by: 'human', note: payload?.note || '' }));
+  ipcMain.handle('control-plane:approve-delivery', async (_e,p)=>controlPlane.approveDelivery(p.runId,p.taskId,p));
   ipcMain.handle('control-plane:reject', async (_event, payload) => (await initControlPlane()).reject(payload?.approvalId, { by: 'human', note: payload?.note || 'Rejected by operator.' }));
 
   ipcMain.handle('harness:status', harnessStatus);

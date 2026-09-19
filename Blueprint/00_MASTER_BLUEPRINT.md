@@ -202,3 +202,39 @@ All autonomous loops are bounded by iteration, timeout, permission, verifier and
 Initial implementation is an Electron desktop application because it enables a fast Windows-first delivery path, strong Chromium isolation controls, native dialog/clipboard/process APIs, and straightforward x64/ARM64 packaging. Electron security requirements are mandatory: context isolation on, Node integration off in renderer, sandboxing on, narrowly-scoped preload API, strict navigation/window-open rules.
 
 Windows packages are produced for x64 and ARM64. Native modules are deliberately avoided in the bootstrap release to keep ARM64 cross-packaging deterministic.
+
+
+## 13. Current implementation baseline — 2026-09-19
+
+The current implementation has crossed from architecture definition into a durable governed Control Plane prototype. The runtime now includes mission planning, durable task state, bounded scheduling, leases/heartbeat, recovery, policy checks, locks, evidence, context capsules, provider routing, GitHub delivery, CI monitoring, bounded CI-driven rework, human-gated PR merge and a live Harness Command Center.
+
+The authoritative detailed status and remaining backlog is `23_IMPLEMENTATION_STATUS.md`. Code, Blueprint and Dashboard must be kept aligned; roadmap items are never considered implemented merely because they are documented.
+
+
+## Runtime closure update — 2026-09-19
+
+The current implementation also includes: signed GitHub webhook ingestion (opt-in), external-event idempotency, CI failed-log evidence, crash/restart recovery, repository-per-task routing, maintenance/worktree garbage collection, and an authenticated local read-only supervision gateway. GitHub commit-SHA polling remains the fallback when no webhook transport is configured. These capabilities are governed by the same Control Plane policy and are reflected in the Harness Command Center.
+
+
+## Runtime governance hardening — 2026-09-19
+
+AECP now treats adapter security as a first-class control-plane invariant. Every registered adapter has an explicit decision for READ, WRITE, EXECUTE, NETWORK and CREDENTIAL capabilities. Ordinary workspace writes are allowed only inside the configured workspace boundary; publishing, merge, delete, credential and system actions remain approval-gated.
+
+Failure recovery is evidence-driven and bounded: transient/deterministic failures may return to the existing task loop within the configured iteration budget, while credential, permission, policy, production and unknown failures stop at HUMAN_REQUIRED. Recovery plans explicitly declare that they grant no new permissions and record the evidence required to justify the transition.
+
+Maintenance drift scans operate on the actual mission repository roots rather than only the AECP runtime-data directory.
+
+
+## Remote supervision security foundation — 2026-09-19
+
+The local supervision gateway now has an explicit device-pairing foundation: a short-lived one-time pairing code creates a short-lived READ_ONLY device credential; credentials can be revoked and enumerated. The gateway remains bound to loopback by default. Pairing never grants task execution, write, merge, credential or system authority. LAN/Internet transport is still a separate deployment gate and must inherit the same policy model.
+
+
+## Deterministic E2E and adapter execution gate — 2026-09-19
+
+The engineering loop includes a clean temporary-Git infrastructure E2E matrix that validates repository discovery, policy gates, resource locks, event idempotency, evidence persistence, bounded recovery and maintenance diagnostics without external model credentials. Planner, Builder, Reviewer and deterministic verifier process launches are also subject to the Control Plane EXECUTE policy before they can start.
+
+
+## Dependency and security drift gate — 2026-09-19
+
+Maintenance includes a bounded npm security drift scan for mission repositories. It reports high/critical vulnerabilities as an engineering gate and never silently upgrades dependencies. Optional outdated-package inspection is available for explicit maintenance runs.

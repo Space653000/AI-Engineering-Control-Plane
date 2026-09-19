@@ -190,3 +190,33 @@ Required:
 ## MVP definition used for first executable
 
 The first executable is **not** claimed to be P7. It is considered a usable preview only if P0 + P1 + the safe subset of P2 are working and independently audited against this Blueprint.
+
+
+## Current gate status — 2026-09-19
+
+P4.7 Harness Engineering Control Plane is **substantially implemented as a governed prototype**. Durable queue/scheduler, task isolation, bounded rework, event journal, evidence, policy/locks, GitHub delivery, CI monitoring and human-gated merge are now present.
+
+P4.7 is **not yet accepted as production-complete**. Remaining acceptance work includes crash-safe substep resume, authenticated/idempotent external GitHub events, full multi-repository routing, complete security enforcement across every adapter, and comprehensive integration/E2E verification.
+
+See `23_IMPLEMENTATION_STATUS.md` for the exact current maturity matrix and ordered completion list.
+
+
+## 2026-09-19 implementation closure update
+
+P4.7 core acceptance is now implemented in code: durable queue/scheduler, dependency/resource routing, isolated worktrees, bounded rework, verifier/reviewer gates, locks/leases, recovery, evidence, policy, GitHub delivery, CI feedback and human-gated merge are present.
+
+The remaining P4.7 acceptance item is the **authenticated inbound GitHub event receiver**. Current CI monitoring is commit-SHA polling with durable idempotency and failed-log evidence; polling is deliberately retained as the safe fallback until a webhook/GitHub App transport is configured.
+
+P5/P6 are intentionally separated from the core local Control Plane: Windows UI Automation and LAN/Internet remote supervision require additional capability and identity boundaries. A local authenticated read-only loopback gateway is now implemented.
+
+
+## 2026-09-19 acceptance refresh
+
+P4.7 is now implemented at the software-control-plane level: durable queue/scheduler, resource-aware multi-repo routing, isolated worktrees, bounded rework, independent verification/review, leases/recovery, event ledger, authenticated/idempotent GitHub webhook ingestion, CI evidence, policy enforcement, adapter security audit and deterministic infrastructure E2E are present.
+
+P6 local security foundation is also implemented: loopback-only authenticated supervision plus expiring one-time device pairing, read-only device credentials and revocation. LAN/Internet transport remains intentionally disabled by default and requires an externally owned authenticated transport/identity.
+
+P5 Windows UI Automation remains an optional capability layer and is not part of the safe core. P6.5 Store identity/submission and production code signing remain operator-owned trust operations. P7 requires clean Windows install/update/rollback, accessibility/localization, signed distribution and full release-environment evidence.
+
+
+Crash-safe substep resume is now implemented in the Harness run record: restart recovery can reuse the existing run root, preserve completed task state and continue unfinished bounded iterations. Release-environment validation is still required before calling this behavior production-proven on clean Windows machines.
